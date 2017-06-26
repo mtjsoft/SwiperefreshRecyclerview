@@ -33,7 +33,8 @@ dependencies {
 
 ![流式布局](http://img.blog.csdn.net/20170624132037025?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjg3NzkwODM=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 
-### activity 继承 HHBaseListRecyclerViewActivity:
+### activity 继承 HHBaseListRecyclerViewActivity:  
+#### 增加 HHBaseListRecyclerViewFragment ，使用方法与 HHBaseListRecyclerViewActivity一致。
 
 ```
 public class MainActivity extends HHBaseListRecyclerViewActivity<DataModel> {
