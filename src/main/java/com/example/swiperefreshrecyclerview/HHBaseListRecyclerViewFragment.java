@@ -4,17 +4,19 @@ package com.example.swiperefreshrecyclerview;
  * Created by Administrator on 2017/6/22 0022.
  */
 
-import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +27,8 @@ import java.util.List;
  * Created by android.mtj on 2017/6/10.
  */
 
-public abstract class HHBaseListRecyclerViewActivity<T> extends Activity {
+public abstract class HHBaseListRecyclerViewFragment<T> extends
+        Fragment {
     // 获取listview显示数据的发送消息的what
     public static final int GET_LIST_DATA = 0;
     private int mark = 2;// 【0：LinearLayoutManager 1：GridLayoutManager 2：StaggeredGridLayoutManager】
@@ -51,16 +54,20 @@ public abstract class HHBaseListRecyclerViewActivity<T> extends Activity {
     private boolean load_more = true;// 是否允许加载更多功能
     private boolean refresh = true;// 是否允许下拉功能
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycleview);
-        swipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipe_refresh);
-        recyclerView = (RecyclerView) this.findViewById(R.id.recycler);
-        tipTextView = (TextView) this.findViewById(R.id.tv_tip);
+    }
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = View.inflate(getContext(), R.layout.activity_recycleview, null);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+        tipTextView = (TextView) view.findViewById(R.id.tv_tip);
         initValues();
         onPageLoad();
         initListeners();
+        return view;
     }
 
     public void onPageLoad() {
@@ -77,8 +84,8 @@ public abstract class HHBaseListRecyclerViewActivity<T> extends Activity {
         }
         mark = setLayoutManagerType();
         pager_size = setPageSize();
-        linearLayoutManager = new LinearLayoutManager(this);
-        gridLayoutManager = new GridLayoutManager(this, count);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        gridLayoutManager = new GridLayoutManager(getContext(), count);
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(count,
                 StaggeredGridLayoutManager.VERTICAL);
 
@@ -275,7 +282,6 @@ public abstract class HHBaseListRecyclerViewActivity<T> extends Activity {
         this.load_more = load_more;
     }
 
-
     /**
      * 设置底部加载更多
      *
@@ -294,11 +300,6 @@ public abstract class HHBaseListRecyclerViewActivity<T> extends Activity {
         return list;
     }
 
-    /**
-     * 获取recyclerview
-     *
-     * @return
-     */
     public RecyclerView getRecyclerView() {
         return recyclerView;
     }
@@ -373,7 +374,7 @@ public abstract class HHBaseListRecyclerViewActivity<T> extends Activity {
                 tipTextView.setText(getString(R.string.no_data));
             } else {
                 //暂无数据提示
-                Toast.makeText(getBaseContext(), R.string.no_data, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), R.string.no_data, Toast.LENGTH_LONG).show();
             }
         } else {
             if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
@@ -392,7 +393,7 @@ public abstract class HHBaseListRecyclerViewActivity<T> extends Activity {
                 }
                 if (temp.size() == pager_size && adapter.getFootersCount() == 0 && load_more) {
                     if (footView == null) {
-                        footView = View.inflate(this, R.layout.hh_include_footer,
+                        footView = View.inflate(getContext(), R.layout.hh_include_footer,
                                 null);
                     }
                     adapter.addFootView(footView);
